@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ananya.event_ticket_booking.dto.UserRequest;
 import com.ananya.event_ticket_booking.entity.User;
 import com.ananya.event_ticket_booking.service.UserService;
+
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -26,8 +29,8 @@ public class UserController {
     }
 
     @PostMapping
-    public User saveUser(@RequestBody User user){
-        return userService.saveUser(user);
+    public User saveUser(@Valid @RequestBody UserRequest request){
+        return userService.saveUser(request);
     }
     
 }

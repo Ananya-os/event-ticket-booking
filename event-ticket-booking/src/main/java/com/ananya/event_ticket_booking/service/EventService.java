@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ananya.event_ticket_booking.dto.EventRequest;
 import com.ananya.event_ticket_booking.entity.Event;
 import com.ananya.event_ticket_booking.repository.EventRepository;
 
@@ -16,9 +17,19 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public Event saveEvent(Event event) {
+    public Event saveEvent(EventRequest request) {
+        Event event = new Event();
+
+        event.setName(request.getName());
+        event.setVenue(request.getVenue());
+        event.setDateTime(request.getDateTime());
+        event.setTotalSeats(request.getTotalSeats());
+
+        // Server decides available seats
+        event.setAvailableSeats(request.getTotalSeats());
+
         return eventRepository.save(event);
-    }
+}
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();

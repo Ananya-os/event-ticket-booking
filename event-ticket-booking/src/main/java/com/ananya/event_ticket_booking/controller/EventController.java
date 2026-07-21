@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ananya.event_ticket_booking.dto.EventRequest;
 import com.ananya.event_ticket_booking.entity.Event;
 import com.ananya.event_ticket_booking.service.EventService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/events")
@@ -22,8 +25,8 @@ public class EventController {
     }
 
     @PostMapping
-    public Event saveEvent(@RequestBody Event event) {
-        return eventService.saveEvent(event);
+    public Event saveEvent(@Valid @RequestBody EventRequest request) {
+        return eventService.saveEvent(request);
     }
 
     @GetMapping
