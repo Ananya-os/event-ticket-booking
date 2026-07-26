@@ -9,6 +9,7 @@ import com.ananya.event_ticket_booking.entity.Booking;
 import com.ananya.event_ticket_booking.entity.Event;
 import com.ananya.event_ticket_booking.entity.User;
 import com.ananya.event_ticket_booking.enums.BookingStatus;
+import com.ananya.event_ticket_booking.exception.ResourceNotFoundException;
 import com.ananya.event_ticket_booking.repository.BookingRepository;
 import com.ananya.event_ticket_booking.repository.EventRepository;
 import com.ananya.event_ticket_booking.repository.UserRepository;
@@ -32,9 +33,13 @@ public class BookingService {
 
     public Booking bookTicket(Long userId, Long eventId, Integer seats) {
 
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
 
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Event not found"));
 
         if (event.getAvailableSeats() < seats) {
             throw new RuntimeException("Not enough seats available");

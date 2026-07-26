@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.ananya.event_ticket_booking.dto.EventRequest;
 import com.ananya.event_ticket_booking.entity.Event;
+import com.ananya.event_ticket_booking.exception.ResourceNotFoundException;
 import com.ananya.event_ticket_booking.repository.EventRepository;
 
 @Service
@@ -18,6 +19,7 @@ public class EventService {
     }
 
     public Event saveEvent(EventRequest request) {
+
         Event event = new Event();
 
         event.setName(request.getName());
@@ -25,21 +27,28 @@ public class EventService {
         event.setDateTime(request.getDateTime());
         event.setTotalSeats(request.getTotalSeats());
 
-        // Server decides available seats
         event.setAvailableSeats(request.getTotalSeats());
 
         return eventRepository.save(event);
-}
+    }
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
     }
 
     public Event getEventById(Long id) {
-        return eventRepository.findById(id).orElseThrow();
+
+        return eventRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Event not found"));
     }
 
     public void deleteEvent(Long id) {
-        eventRepository.deleteById(id);
+
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Event not found"));
+
+        eventRepository.delete(event);
     }
 }
