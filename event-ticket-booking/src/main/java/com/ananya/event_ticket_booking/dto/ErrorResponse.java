@@ -9,8 +9,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ErrorResponse {
 
-    private LocalDateTime timestamp;
-    private int status;
-    private String message;
+    private final LocalDateTime timestamp;
+    private final int status;
+    private final String message;
 
 }
