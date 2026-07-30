@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ananya.event_ticket_booking.dto.LoginRequest;
+import com.ananya.event_ticket_booking.dto.LoginResponse;
+import com.ananya.event_ticket_booking.security.JwtUtil;
 
 import jakarta.validation.Valid;
 
@@ -14,30 +16,26 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    public AuthController(AuthenticationManager authenticationManager) {
+    public AuthController(AuthenticationManager authenticationManager,
+                          JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/login")
-    public String login(@Valid @RequestBody LoginRequest request) {
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
 
-        System.out.println("Inside login controller");
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
-        try {
+        String token = jwtUtil.generateToken(request.getEmail());
 
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    )
-            );
-
-            return "Login Successful";
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+        return new LoginResponse(token);
     }
 }
