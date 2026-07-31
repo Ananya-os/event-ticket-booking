@@ -1,6 +1,7 @@
 package com.ananya.event_ticket_booking.dto;
 
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,11 +9,11 @@ import lombok.Setter;
 @Setter
 public class BookingRequest {
 
-    private Long userId;
-
+    @NotNull
+    @Positive
     private Long eventId;
 
-    @Min(1)
+    @NotNull
+    @Positive
     private Integer seats;
-
 }
