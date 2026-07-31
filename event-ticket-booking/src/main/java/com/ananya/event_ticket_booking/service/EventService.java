@@ -1,7 +1,7 @@
 package com.ananya.event_ticket_booking.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ananya.event_ticket_booking.dto.EventRequest;
@@ -33,10 +33,9 @@ public class EventService {
         return toResponse(eventRepository.save(event));
     }
 
-    public List<EventResponse> getAllEvents() {
-        return eventRepository.findAll().stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<EventResponse> getAllEvents(Pageable pageable) {
+        return eventRepository.findAll(pageable)
+                .map(this::toResponse);
     }
 
     public Event getEventById(Long id) {

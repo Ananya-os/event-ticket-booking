@@ -1,8 +1,8 @@
 package com.ananya.event_ticket_booking.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -59,7 +59,7 @@ public class BookingService {
 
         event.setAvailableSeats(event.getAvailableSeats() - seats);
 
-        eventRepository.save(event);
+        eventRepository.saveAndFlush(event);
 
         Booking booking = new Booking();
 
@@ -73,16 +73,14 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookingResponse> getBookingsForCurrentUser() {
+    public Page<BookingResponse> getBookingsForCurrentUser(Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        List<Booking> bookings = isAdmin(authentication)
-                ? bookingRepository.findAll()
-                : bookingRepository.findByUserEmail(authentication.getName());
+        Page<Booking> bookings = isAdmin(authentication)
+                ? bookingRepository.findAll(pageable)
+                : bookingRepository.findByUserEmail(authentication.getName(), pageable);
 
-        return bookings.stream()
-                .map(this::toResponse)
-                .toList();
+        return bookings.map(this::toResponse);
     }
 
     private boolean isAdmin(Authentication authentication) {

@@ -10,9 +10,14 @@ import com.ananya.event_ticket_booking.dto.LoginRequest;
 import com.ananya.event_ticket_booking.dto.LoginResponse;
 import com.ananya.event_ticket_booking.security.JwtUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
+@Tag(name = "Authentication", description = "JWT authentication")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -25,6 +30,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Log in and receive a JWT")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials")
+    })
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
 
         authenticationManager.authenticate(
